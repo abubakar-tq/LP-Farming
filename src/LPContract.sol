@@ -16,19 +16,9 @@ contract LPContract {
     error LPContract_InsufficientLiquidityMinted();
     error LPContract_WithdrawNotEnough();
 
-    event LiquidityAdded(
-        address indexed provider,
-        uint256 amountA,
-        uint256 amountB,
-        uint256 liquidityMinted
-    );
+    event LiquidityAdded(address indexed provider, uint256 amountA, uint256 amountB, uint256 liquidityMinted);
 
-    event LiquidityRemoved(
-        address indexed provider,
-        uint256 amountA,
-        uint256 amountB,
-        uint256 liquidityBurned
-    );
+    event LiquidityRemoved(address indexed provider, uint256 amountA, uint256 amountB, uint256 liquidityBurned);
 
     // Deposit(A,B) , Withdraw() ,
 
@@ -79,15 +69,11 @@ contract LPContract {
 
         //  Send pending rewards first
         if (user.amount > 0) {
-            uint256 pending = (user.amount * s_accRewardPerShare) /
-                1e12 -
-                user.rewardDebt;
+            uint256 pending = (user.amount * s_accRewardPerShare) / 1e12 - user.rewardDebt;
             if (pending > 0) {
                 s_rewardToken.transfer(msg.sender, pending);
             }
         }
-
-        
 
         if (!s_tokenA.transferFrom(msg.sender, address(this), amountA)) {
             revert LPContract_TokenATrasferFailed();
@@ -136,9 +122,7 @@ contract LPContract {
 
         updatePool();
 
-        uint256 pending = (user.amount * s_accRewardPerShare) /
-            1e12 -
-            user.rewardDebt;
+        uint256 pending = (user.amount * s_accRewardPerShare) / 1e12 - user.rewardDebt;
 
         if (pending > 0) {
             bool success = s_rewardToken.transfer(msg.sender, pending);
@@ -195,9 +179,7 @@ contract LPContract {
         updatePool();
 
         UserInfo storage user = userInfo[msg.sender];
-        uint256 pending = (user.amount * s_accRewardPerShare) /
-            1e12 -
-            user.rewardDebt;
+        uint256 pending = (user.amount * s_accRewardPerShare) / 1e12 - user.rewardDebt;
         if (pending > 0) {
             s_rewardToken.transfer(msg.sender, pending);
         }
@@ -206,13 +188,7 @@ contract LPContract {
         //rewardclaim event
     }
 
-    constructor(
-        address _tokenA,
-        address _tokenB,
-        address _lpToken,
-        address _rewardToken,
-        uint256 _rewardPerBlock
-    ) {
+    constructor(address _tokenA, address _tokenB, address _lpToken, address _rewardToken, uint256 _rewardPerBlock) {
         s_tokenA = TokenA(_tokenA);
         s_tokenB = TokenB(_tokenB);
         s_tokenLp = LPToken(_lpToken);

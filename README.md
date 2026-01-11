@@ -1,66 +1,81 @@
-## Foundry
+# LP Farming (Foundry / Solidity)
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+Educational Foundry project that implements a minimal **liquidity pool + farming** flow:
+deposit two ERC20 tokens, receive LP tokens, and accrue a mintable reward token per block using the
+`accRewardPerShare` / `rewardDebt` accounting pattern.
 
-Foundry consists of:
+This repo is intended for learning and showcasing Solidity + Foundry skills (tests, scripts, CI).
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+## Tech stack
 
-## Documentation
+- Solidity `^0.8.20`
+- Foundry (Forge/Anvil)
+- OpenZeppelin Contracts (ERC20 + `Math.sqrt`)
 
-https://book.getfoundry.sh/
+## What’s inside
 
-## Usage
+- `src/LPContract.sol`: pool + rewards logic (`deposit`, `withdraw`, `claimReward`, `pendingReward`)
+- `src/LPToken.sol`: LP token (mint/burn controlled by the pool contract)
+- `src/TokenA.sol`, `src/TokenB.sol`: simple ERC20s used for testing/demo
+- `src/RewardToken.sol`: reward ERC20 minted as emissions
+- `script/DeployScript.s.sol`: deploys demo tokens + pool (see `script/README.md`)
+- `test/unit/LPContractTest.sol`: unit tests for deposits/withdrawals/reward accrual
 
-### Build
+## Quickstart
 
-```shell
-$ forge build
+Clone with submodules (OpenZeppelin + forge-std are included as git submodules):
+
+```bash
+git clone --recurse-submodules <repo-url>
+cd lp-farming
 ```
 
-### Test
+Build + test:
 
-```shell
-$ forge test
+```bash
+forge build
+forge test -vvv
 ```
 
-### Format
+## Mechanics (high level)
 
-```shell
-$ forge fmt
+- Initial liquidity: `sqrt(amountA * amountB)`
+- Later deposits: liquidity minted is proportional to existing reserves (min of the two ratios)
+- Rewards: `rewardPerBlock` distributed pro-rata to “staked” LP, accounted via `accRewardPerShare` + `rewardDebt`
+
+## Local deployment (Anvil)
+
+Terminal 1:
+
+```bash
+anvil
 ```
 
-### Gas Snapshots
+Terminal 2:
 
-```shell
-$ forge snapshot
+```bash
+forge script script/DeployScript.s.sol:DeployScript --rpc-url http://127.0.0.1:8545 --broadcast
 ```
 
-### Anvil
+## Notes / limitations (important)
 
-```shell
-$ anvil
-```
+This is a **toy / learning implementation** and is **not audited**. In particular:
 
-### Deploy
+- `RewardToken.mint()` is permissionless (anyone can mint) — do not use as-is in production.
+- The pool does not implement production-grade AMM mechanics (pricing, fees, swaps, slippage).
+- No hardening against malicious ERC20 behavior (reentrancy/fee-on-transfer hooks, etc.).
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
+## Repo structure
 
-### Cast
+- `src/README.md`: contract-level notes
+- `script/README.md`: scripts + configuration notes
+- `test/README.md`: testing notes
 
-```shell
-$ cast <subcommand>
-```
+## CI
 
-### Help
+GitHub Actions runs `forge fmt --check`, `forge build --sizes`, and `forge test -vvv` on pushes/PRs.
+Workflow: `.github/workflows/test.yml`.
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+## References
+
+- Foundry book: https://book.getfoundry.sh/

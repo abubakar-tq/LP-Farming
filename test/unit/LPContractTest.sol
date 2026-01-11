@@ -55,14 +55,8 @@ contract LPContractTest is Test {
         lpContract.deposit(amountA, amountB);
         vm.stopPrank();
 
-        console.log(
-            "Token A balance of LPContract: ",
-            tokenA.balanceOf(address(lpContract))
-        );
-        console.log(
-            "Token B balance of LPContract: ",
-            tokenB.balanceOf(address(lpContract))
-        );
+        console.log("Token A balance of LPContract: ", tokenA.balanceOf(address(lpContract)));
+        console.log("Token B balance of LPContract: ", tokenB.balanceOf(address(lpContract)));
         console.log("LPToken balance of user: ", tokenLp.balanceOf(user));
 
         // Check the balances
@@ -95,14 +89,8 @@ contract LPContractTest is Test {
         // Call the deposit function
         lpContract.deposit(amountA, amountB);
 
-        console.log(
-            "Token A balance of LPContract: ",
-            tokenA.balanceOf(address(lpContract))
-        );
-        console.log(
-            "Token B balance of LPContract: ",
-            tokenB.balanceOf(address(lpContract))
-        );
+        console.log("Token A balance of LPContract: ", tokenA.balanceOf(address(lpContract)));
+        console.log("Token B balance of LPContract: ", tokenB.balanceOf(address(lpContract)));
         console.log("LPToken balance of user: ", tokenLp.balanceOf(user));
 
         // Withdraw the LP tokens
@@ -140,14 +128,8 @@ contract LPContractTest is Test {
         // Call the deposit function
         lpContract.deposit(amountA, amountB);
 
-        console.log(
-            "Token A balance of LPContract: ",
-            tokenA.balanceOf(address(lpContract))
-        );
-        console.log(
-            "Token B balance of LPContract: ",
-            tokenB.balanceOf(address(lpContract))
-        );
+        console.log("Token A balance of LPContract: ", tokenA.balanceOf(address(lpContract)));
+        console.log("Token B balance of LPContract: ", tokenB.balanceOf(address(lpContract)));
         console.log("LPToken balance of user: ", tokenLp.balanceOf(user));
 
         // Withdraw the LP tokens
@@ -161,10 +143,7 @@ contract LPContractTest is Test {
     function testPendingReward() external DepositTokens {
         vm.startPrank(user);
         // Simulate some blocks passing
-        console.log(
-            "Pending rewards before block roll: ",
-            lpContract.pendingReward(user)
-        );
+        console.log("Pending rewards before block roll: ", lpContract.pendingReward(user));
         vm.roll(block.number + 10);
 
         // Check pending rewards
@@ -212,20 +191,14 @@ contract LPContractTest is Test {
         vm.stopPrank();
 
         uint256 updatedLastRewardBlock = lpContract.getLastRewardBlock();
-        uint256 lpContractRewardBalance = rewardToken.balanceOf(
-            address(lpContract)
-        );
+        uint256 lpContractRewardBalance = rewardToken.balanceOf(address(lpContract));
         uint256 totalLpStaked = lpContract.getTotalLpStaked();
         uint256 accumulatedReward = lpContract.getAccumulatedRewardPerShare();
 
         console.log("Total lp staked: ", totalLpStaked);
         console.log("balance of user lp ", tokenLp.balanceOf(user));
 
-        assertApproxEqAbs(
-            accumulatedReward,
-            (10 * rewardPerBlock * 1e12) / totalLpStaked,
-            1
-        );
+        assertApproxEqAbs(accumulatedReward, (10 * rewardPerBlock * 1e12) / totalLpStaked, 1);
 
         assertApproxEqAbs(lpContractRewardBalance, 10 * rewardPerBlock, 1);
         assertApproxEqAbs(updatedLastRewardBlock, block.number, 1);
@@ -322,10 +295,7 @@ contract LPContractTest is Test {
         assertEq(pendingRewards, 0);
     }
 
-    function testPendingRewardsAreTrasferredBeforeDeposit()
-        external
-        DepositTokens
-    {
+    function testPendingRewardsAreTrasferredBeforeDeposit() external DepositTokens {
         vm.roll(block.number + 10);
         uint256 pendingRewards = lpContract.pendingReward(user);
 
@@ -352,6 +322,4 @@ contract LPContractTest is Test {
 
         vm.stopPrank();
     }
-
-    
 }

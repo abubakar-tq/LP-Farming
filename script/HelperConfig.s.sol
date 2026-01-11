@@ -31,43 +31,31 @@ contract HelperConfig is Script, CodeConstants {
         networkConfigs[LOCAL_CHAIN_ID] = getAnvilNetworkConfig();
     }
 
-    function getSepoliaNetworkConfig()
-        internal
-        pure
-        returns (NetworkConfig memory)
-    {
-        return
-            NetworkConfig(
-                0x8943F7348E2559C6E69eeCb0dA932424C3E6dC66,
-                TokenA(address(0x0)),
-                TokenB(address(0x0)),
-                LPToken(address(0x0)),
-                LPContract(address(0x0)),
-                RewardToken(address(0x0)),
-                1e18 // 1 token per block
-            );
+    function getSepoliaNetworkConfig() internal pure returns (NetworkConfig memory) {
+        return NetworkConfig(
+            0x8943F7348E2559C6E69eeCb0dA932424C3E6dC66,
+            TokenA(address(0x0)),
+            TokenB(address(0x0)),
+            LPToken(address(0x0)),
+            LPContract(address(0x0)),
+            RewardToken(address(0x0)),
+            1e18 // 1 token per block
+        );
     }
 
-    function getAnvilNetworkConfig()
-        internal
-        pure
-        returns (NetworkConfig memory)
-    {
-        return
-            NetworkConfig(
-                0x70997970C51812dc3A010C7d01b50e0d17dc79C8,
-                TokenA(address(0x0)),
-                TokenB(address(0x0)),
-                LPToken(address(0x0)),
-                LPContract(address(0x0)),
-                RewardToken(address(0x0)),
-                1e18 // 1 token per block
-            );
+    function getAnvilNetworkConfig() internal pure returns (NetworkConfig memory) {
+        return NetworkConfig(
+            0x70997970C51812dc3A010C7d01b50e0d17dc79C8,
+            TokenA(address(0x0)),
+            TokenB(address(0x0)),
+            LPToken(address(0x0)),
+            LPContract(address(0x0)),
+            RewardToken(address(0x0)),
+            1e18 // 1 token per block
+        );
     }
 
-    function getConfigByChainID(
-        uint256 chainID
-    ) public view returns (NetworkConfig memory) {
+    function getConfigByChainID(uint256 chainID) public view returns (NetworkConfig memory) {
         NetworkConfig memory config = networkConfigs[chainID];
 
         return config;
@@ -77,10 +65,7 @@ contract HelperConfig is Script, CodeConstants {
         return getConfigByChainID(block.chainid);
     }
 
-    function setConfig(
-        uint256 chainId,
-        NetworkConfig memory networkConfig
-    ) public {
+    function setConfig(uint256 chainId, NetworkConfig memory networkConfig) public {
         networkConfigs[chainId] = networkConfig;
     }
 }

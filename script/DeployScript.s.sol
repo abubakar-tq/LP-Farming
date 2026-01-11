@@ -25,11 +25,7 @@ contract DeployScript is Script {
         LPToken lpToken = new LPToken();
         RewardToken rewardToken = new RewardToken();
         LPContract lpContract = new LPContract(
-            address(tokenA),
-            address(tokenB),
-            address(lpToken),
-            address(rewardToken),
-            config.rewardPerBlock
+            address(tokenA), address(tokenB), address(lpToken), address(rewardToken), config.rewardPerBlock
         );
 
         lpToken.setMinter(address(lpContract));
